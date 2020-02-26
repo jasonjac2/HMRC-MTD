@@ -101,26 +101,6 @@ Begin
 
 End;</code></pre>
 
-4. Nothing to do the headers but I added the following code to <code>Procedure THMRCRestClient.REQ_Reset;</code> because I kept getting an AV on <code>FTransientParams.Clear;</code> in <code>ORequest.ResetToDefaults</code>, not all the time but when I ran the app for the first time during a day. Very strange. So replace the call begin <pre><code>ORequest.ResetToDefaults;</code></pre> to 
-
-<pre><code> 
-ix1 := 0;
-resetComplete := False;
-Repeat
-	Try
-		ORequest.ResetToDefaults;
-		resetComplete := true;
-	Except On e: Exception Do
-	Begin
-		inc(ix1);
-		If ix1 = 4 Then
-			Raise
-		Else
-			sleep(250);
-	End;
-Until resetComplete;
-</code></pre>
-
 
 ## II. Sourcing the data required by the headers ##
 
