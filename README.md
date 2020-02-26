@@ -19,7 +19,7 @@ THMRCRestClient
 
 1. Change <code>procedure AddaHeader</code>:
 <pre><code> 
-    Procedure THMRCRestClient.AddaHeader(Const aName, aValue: String; *Const NoEncode: boolean = False*); 
+    Procedure THMRCRestClient.AddaHeader(Const aName, aValue: String; Const NoEncode: boolean = False); 
     Const
     	_dont_encode: Array [boolean] Of String = ('encode', 'noencode');
     Begin
