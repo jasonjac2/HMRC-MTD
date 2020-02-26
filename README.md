@@ -17,7 +17,7 @@ While I have used FMX, it is only a Windows implementation and the code provided
 
 THMRCRestClient 
 
-1. Change <pre><code>procedure AddaHeader</code></pre>:
+1. Change <code>procedure AddaHeader</code>:
 <pre><code> 
     Procedure THMRCRestClient.AddaHeader(Const aName, aValue: String; *Const NoEncode: boolean = False*); 
     Const
