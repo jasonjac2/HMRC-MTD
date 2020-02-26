@@ -189,7 +189,7 @@ name: **Gov-Vendor-Version**
 stop auto encoding: Yes
 value: <pre><code>URIEncode(SystemName)=Appversion</code></pre> e.g. 'SMX%20VAT%20Submitter=1.1.1.1'
 
-name:** Gov-Vendor-License-IDs** 
+name: **Gov-Vendor-License-IDs** 
 stop auto encoding: Yes
 value: <pre><code>UriEncode(Software)=HashedLicenceKey,UriEncode(Software2)=HashedLicenceKey</code></pre>
 notes: may only be one software licence as in our case.
