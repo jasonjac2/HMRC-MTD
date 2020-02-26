@@ -17,20 +17,20 @@ While I have used FMX, it is only a Windows implementation and the code provided
 
 THMRCRestClient 
 
-1. Change <code>procedure AddaHeader</code>:
-<code> 
+1. Change <pre><code>procedure AddaHeader</code></pre>:
+<pre><code> 
     Procedure THMRCRestClient.AddaHeader(Const aName, aValue: String; *Const NoEncode: boolean = False*); 
     Const
     	_dont_encode: Array [boolean] Of String = ('encode', 'noencode');
     Begin
     	LHeaderList.Add(aName + '|' + aValue + '|' + _dont_encode[NoEncode]);
     End;
-</code>
+</code></pre>
 
 note: I have changed the delimiter to '|' from a ':' as we will need to use the ':' in some values. Also added the new param 'NoEncode' as we need to do the encoding ourselves as it is not as straightforward as encoding the value.
 
-2. add a new <code>Procedure REQ_LoadHeaders;</code> - this makes things simpler as we will need to also do this for the Test submissions.
-<code>    
+2. add a new <pre><code>Procedure REQ_LoadHeaders;</code></pre> - this makes things simpler as we will need to also do this for the Test submissions.
+<pre><code>    
     Procedure THMRCRestClient.REQ_LoadHeaders;
     Var
       ix1: integer;
@@ -52,13 +52,13 @@ note: I have changed the delimiter to '|' from a ':' as we will need to use the 
         End;
       End;
     End;
-</code> 
+</code></pre> 
 
-The original code for adding headers was in Procedure THMRCRestClient.REQ_Reset; so remove the code under the comment  *// add gov and vendor headers if supplied* and put in a call to *REQ_LoadHeaders;*. Also note the original code called <code>UriEncode(Vals[1])</code> - this is not needed as the base REST component does this unless told not to and can lead to problems with the new headers.
+The original code for adding headers was in Procedure THMRCRestClient.REQ_Reset; so remove the code under the comment  *// add gov and vendor headers if supplied* and put in a call to *REQ_LoadHeaders;*. Also note the original code called <pre><code>UriEncode(Vals[1])</code></pre> - this is not needed as the base REST component does this unless told not to and can lead to problems with the new headers.
 
-3. Add New <code>Function THmrcTestClient.TestFraudHeaders: boolean</code>
+3. Add New <pre><code>Function THmrcTestClient.TestFraudHeaders: boolean</code></pre>
 
-<code>Function THmrcTestClient.TestFraudHeaders: integer;
+<pre><code>Function THmrcTestClient.TestFraudHeaders: integer;
 Begin
   Result := RESULT_NONE;
   REQ_ClearLast;
@@ -99,11 +99,11 @@ Begin
     Result := RESULT_ERROR;
   End;
 
-End;</code>
+End;</code></pre>
 
-4. Nothing to do the headers but I added the following code to <code>Procedure THMRCRestClient.REQ_Reset;</code> because I kept getting an AV on <code>FTransientParams.Clear;</code> in <code>ORequest.ResetToDefaults</code>, not all the time but when I ran the app for the first time during a day. Very strange. So replace the call begin <code>ORequest.ResetToDefaults;</code> to 
+4. Nothing to do the headers but I added the following code to <pre><code>Procedure THMRCRestClient.REQ_Reset;</code></pre> because I kept getting an AV on <pre><code>FTransientParams.Clear;</code></pre> in <pre><code>ORequest.ResetToDefaults</code></pre>, not all the time but when I ran the app for the first time during a day. Very strange. So replace the call begin <pre><code>ORequest.ResetToDefaults;</code></pre> to 
 
-<code> 
+<pre><code> 
 ix1 := 0;
 resetComplete := False;
 Repeat
@@ -119,21 +119,21 @@ Repeat
 			sleep(250);
 	End;
 Until resetComplete;
-</code>
+</code></pre>
 
 
 ## II. Sourcing the data required by the headers ##
 
 This only covers headers needed for DESKTOP_APP_DIRECT, if you are using any other type, you are on your own :-). I have listed the headers in the order they are listed on the HMRC Dev Web Page [https://developer.service.hmrc.gov.uk/api-documentation/docs/fraud-prevention](https://developer.service.hmrc.gov.uk/api-documentation/docs/fraud-prevention).
 
-stop auto encoding means that you use <code>AddaHeader(name, value, **True**);</code>. The auto encoding has to be stopped because where there are lists you do not want to encode the delimiters. The values below show on what you need to <code>URIEncode()</code> which is in the unit *REST.Utils*. 
+stop auto encoding means that you use <pre><code>AddaHeader(name, value, **True**);</code></pre>. The auto encoding has to be stopped because where there are lists you do not want to encode the delimiters. The values below show on what you need to <pre><code>URIEncode()</code></pre> which is in the unit *REST.Utils*. 
 Code provided in source files in this repo:
 
-<code>InternetSupport.SomeFunction</code> is a reference to *Systematic.Internet.Support.pas* they are class functions of the class *TInternetSupport*.
+<pre><code>InternetSupport.SomeFunction</code></pre> is a reference to *Systematic.Internet.Support.pas* they are class functions of the class *TInternetSupport*.
 
-<code>Utils.SomeFunction</codes is a reference to *VAT.Header.Utils.pas* they are class functions of *THMRCMTDUtils*.  
+<pre><code>Utils.SomeFunction</codes is a reference to *VAT.Header.Utils.pas* they are class functions of *THMRCMTDUtils*.  
 
-<code>MACAddress.SomeFunction</code> is a reference to *Systematic.FMX.MacAddress.pas*.
+<pre><code>MACAddress.SomeFunction</code></pre> is a reference to *Systematic.FMX.MacAddress.pas*.
 
 name: **Gov-Client-Connection-Method** 
 stop auto encoding: No
@@ -145,35 +145,36 @@ value: Create your own, use a GUID and store in the registry. This should never 
 
 name: **Gov-Client-User-IDs**  
 stop auto encoding: Yes
-value: <code>'os=' + URIEncode(Utils.GetUserName)</code>
+value: <pre><code>'os=' + URIEncode(Utils.GetUserName)</code></pre>
 notes: os does not stand for operating system as it does elsewhere in the HMRC documentation it is actually literal.
 
 name: **Gov-Client-Timezone** 
 stop auto encoding: Yes
-Value:<code>Utils.getTimeZone</code> 
+Value:<pre><code>Utils.getTimeZone</code></pre> 
 
 name: **Gov-Client-Local-IPs** 
 stop auto encoding: Yes 
-value: <code>InternetSupport.GetLocalIPs(',', True, True);</code>
+value: <pre><code>InternetSupport.GetLocalIPs(',', True, True);</code></pre>
 Notes: They don't mean local IPs they mean private IPs. Each IP has to be encoded, but not the delimiter. That function manages that.
 
 name: **Gov-Client-MAC-Addresses** 
 stop auto encoding: Yes
-value: <code>MacAddress.GetAllMacAddresses(True)</code>
+value: <pre><code>MacAddress.GetAllMacAddresses(True)</code></pre>
 notes: Each mac address has to be encoded, but not the delimiter. That function manages that.
 
 name: **Gov-Client-Screens**
 stop auto encoding: Yes
-value: <code>Utils.ScreensInfo</code>
+value: <pre><code>Utils.ScreensInfo</code></pre>
 
 name: **Gov-Client-Window-Size** 
 stop auto encoding: Yes
-value: <code>width=500&height=400</code>
+value: <pre><code>width=500&height=400</code></pre>
 notes: set this to the width and height that you will use to show the OAUTH browser pop up.
 
 name: **Gov-Client-User-Agent** 
 stop auto encoding: Yes
-value: 
+value: <pre><code>Utils.getUserAgent</code></pre>
+notes: you will need https://github.com/RRUZ/tsmbios/uSMBIOS.pas
 
 These headers are only required for **WEB_APP_VIA_SERVER** only so not needed
 //  Gov-Client-Browser-Plugins
@@ -186,11 +187,11 @@ value: leave blank if you aren't using 2FA
 
 name: **Gov-Vendor-Version** 
 stop auto encoding: Yes
-value: <code>URIEncode(SystemName)=Appversion</code> e.g. 'SMX%20VAT%20Submitter=1.1.1.1'
+value: <pre><code>URIEncode(SystemName)=Appversion</code></pre> e.g. 'SMX%20VAT%20Submitter=1.1.1.1'
 
 name:** Gov-Vendor-License-IDs** 
 stop auto encoding: Yes
-value: <code>UriEncode(Software)=HashedLicenceKey,UriEncode(Software2)=HashedLicenceKey</code>
+value: <pre><code>UriEncode(Software)=HashedLicenceKey,UriEncode(Software2)=HashedLicenceKey</code></pre>
 notes: may only be one software licence as in our case.
 
 These headers arfe only required for ***_SERVER** Connection Methods

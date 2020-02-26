@@ -15,12 +15,14 @@ THMRCMTDUtils = Class
   class function ScreensInfo: string;
   class function getTimeZone: string;
   class function getOSUserName: string;
+  class function getUserAgent: string;
 End;
 
 implementation
 
 
-uses FMX.Platform, System.SysUtils, FMX.Forms, System.DateUtils, System.StrUtils, System.TimeSpan;
+uses FMX.Platform, System.SysUtils, FMX.Forms, System.DateUtils, System.StrUtils, System.TimeSpan,
+REST.Utils, uSMBIOS;
 
 { THMRCMTDUtils }
 
@@ -78,6 +80,28 @@ Begin
   retval := TTimeZone.Local.GetUtcOffset(Now);
   result := 'UTC' + ifThen(retval.Hours >= 0, '+') + FormatFloat('00', retval.Hours) + ':' +
     FormatFloat('00', retval.Minutes);
+End;
+
+Class Function THMRCMTDUtils.getUserAgent: String;
+Var
+  i, p: Integer;
+  ldata: TArray<String>;
+  bios: TSMBios;
+Begin
+
+  ldata := TOSVersion.ToString.Split(['(']);
+
+  Result := ldata[0].Trim.Replace(' ', '/');
+
+  // wmic computersystem get model, manufacturer
+  bios := TSMBios.Create();
+  Try
+    Result := Result + ' (' + URIEncode(bios.SysInfo.ManufacturerStr) + '/' +
+      URIEncode(bios.SysInfo.ProductNameStr) + ')';
+  Finally
+    bios.Free;
+  End;
+
 End;
 
 end.
