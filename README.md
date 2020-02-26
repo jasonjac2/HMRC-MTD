@@ -135,7 +135,7 @@ Code provided in source files in this repo:
 
 <code>MACAddress.SomeFunction</code> is a reference to *Systematic.FMX.MacAddress.pas*.
 
-name: **Gov-Client-Connection-Method** 
+name: **Gov-Client-Connection-Method**  
 stop auto encoding: No
 value: 'DESKTOP_APP_DIRECT'
 
