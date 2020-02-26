@@ -54,7 +54,7 @@ note: I have changed the delimiter to '|' from a ':' as we will need to use the 
     End;
 </code></pre> 
 
-The original code for adding headers was in Procedure THMRCRestClient.REQ_Reset; so remove the code under the comment  *// add gov and vendor headers if supplied* and put in a call to *REQ_LoadHeaders;*. Also note the original code called <pre><code>UriEncode(Vals[1])</code></pre> - this is not needed as the base REST component does this unless told not to and can lead to problems with the new headers.
+The original code for adding headers was in Procedure THMRCRestClient.REQ_Reset; so remove the code under the comment  *// add gov and vendor headers if supplied* and put in a call to *REQ_LoadHeaders;*. Also note the original code called <code>UriEncode(Vals[1])</code> - this is not needed as the base REST component does this unless told not to and can lead to problems with the new headers.
 
 3. Add New <pre><code>Function THmrcTestClient.TestFraudHeaders: boolean</code></pre>
 
@@ -101,7 +101,7 @@ Begin
 
 End;</code></pre>
 
-4. Nothing to do the headers but I added the following code to <pre><code>Procedure THMRCRestClient.REQ_Reset;</code></pre> because I kept getting an AV on <pre><code>FTransientParams.Clear;</code></pre> in <pre><code>ORequest.ResetToDefaults</code></pre>, not all the time but when I ran the app for the first time during a day. Very strange. So replace the call begin <pre><code>ORequest.ResetToDefaults;</code></pre> to 
+4. Nothing to do the headers but I added the following code to <code>Procedure THMRCRestClient.REQ_Reset;</code> because I kept getting an AV on <code>FTransientParams.Clear;</code> in <code>ORequest.ResetToDefaults</code>, not all the time but when I ran the app for the first time during a day. Very strange. So replace the call begin <pre><code>ORequest.ResetToDefaults;</code></pre> to 
 
 <pre><code> 
 ix1 := 0;
@@ -126,14 +126,14 @@ Until resetComplete;
 
 This only covers headers needed for DESKTOP_APP_DIRECT, if you are using any other type, you are on your own :-). I have listed the headers in the order they are listed on the HMRC Dev Web Page [https://developer.service.hmrc.gov.uk/api-documentation/docs/fraud-prevention](https://developer.service.hmrc.gov.uk/api-documentation/docs/fraud-prevention).
 
-stop auto encoding means that you use <pre><code>AddaHeader(name, value, **True**);</code></pre>. The auto encoding has to be stopped because where there are lists you do not want to encode the delimiters. The values below show on what you need to <pre><code>URIEncode()</code></pre> which is in the unit *REST.Utils*. 
+stop auto encoding means that you use <code>AddaHeader(name, value, **True**);</code>. The auto encoding has to be stopped because where there are lists you do not want to encode the delimiters. The values below show on what you need to <code>URIEncode()</code> which is in the unit *REST.Utils*. 
 Code provided in source files in this repo:
 
-<pre><code>InternetSupport.SomeFunction</code></pre> is a reference to *Systematic.Internet.Support.pas* they are class functions of the class *TInternetSupport*.
+<code>InternetSupport.SomeFunction</code> is a reference to *Systematic.Internet.Support.pas* they are class functions of the class *TInternetSupport*.
 
-<pre><code>Utils.SomeFunction</codes is a reference to *VAT.Header.Utils.pas* they are class functions of *THMRCMTDUtils*.  
+<code>Utils.SomeFunction</codes is a reference to *VAT.Header.Utils.pas* they are class functions of *THMRCMTDUtils*.  
 
-<pre><code>MACAddress.SomeFunction</code></pre> is a reference to *Systematic.FMX.MacAddress.pas*.
+<code>MACAddress.SomeFunction</code> is a reference to *Systematic.FMX.MacAddress.pas*.
 
 name: **Gov-Client-Connection-Method** 
 stop auto encoding: No
@@ -145,35 +145,35 @@ value: Create your own, use a GUID and store in the registry. This should never 
 
 name: **Gov-Client-User-IDs**  
 stop auto encoding: Yes
-value: <pre><code>'os=' + URIEncode(Utils.GetUserName)</code></pre>
+value: <code>'os=' + URIEncode(Utils.GetUserName)</code>
 notes: os does not stand for operating system as it does elsewhere in the HMRC documentation it is actually literal.
 
 name: **Gov-Client-Timezone** 
 stop auto encoding: Yes
-Value:<pre><code>Utils.getTimeZone</code></pre> 
+Value:<code>Utils.getTimeZone</code> 
 
 name: **Gov-Client-Local-IPs** 
 stop auto encoding: Yes 
-value: <pre><code>InternetSupport.GetLocalIPs(',', True, True);</code></pre>
-Notes: They don't mean local IPs they mean private IPs. Each IP has to be encoded, but not the delimiter. That function manages that.
+value: <code>InternetSupport.GetLocalIPs(',', True, True);</code>
+notes: They don't mean local IPs they mean private IPs. Each IP has to be encoded, but not the delimiter. That function manages that.
 
 name: **Gov-Client-MAC-Addresses** 
 stop auto encoding: Yes
-value: <pre><code>MacAddress.GetAllMacAddresses(True)</code></pre>
+value: <code>MacAddress.GetAllMacAddresses(True)</code>
 notes: Each mac address has to be encoded, but not the delimiter. That function manages that.
 
 name: **Gov-Client-Screens**
 stop auto encoding: Yes
-value: <pre><code>Utils.ScreensInfo</code></pre>
+value: <code>Utils.ScreensInfo</code>
 
 name: **Gov-Client-Window-Size** 
 stop auto encoding: Yes
-value: <pre><code>width=500&height=400</code></pre>
+value: <code>width=500&height=400</code>
 notes: set this to the width and height that you will use to show the OAUTH browser pop up.
 
 name: **Gov-Client-User-Agent** 
 stop auto encoding: Yes
-value: <pre><code>Utils.getUserAgent</code></pre>
+value: <code>Utils.getUserAgent</code>
 notes: you will need https://github.com/RRUZ/tsmbios/uSMBIOS.pas
 
 These headers are only required for **WEB_APP_VIA_SERVER** only so not needed
@@ -187,11 +187,11 @@ value: leave blank if you aren't using 2FA
 
 name: **Gov-Vendor-Version** 
 stop auto encoding: Yes
-value: <pre><code>URIEncode(SystemName)=Appversion</code></pre> e.g. 'SMX%20VAT%20Submitter=1.1.1.1'
+value: <code>URIEncode(SystemName)=Appversion</code> e.g. 'SMX%20VAT%20Submitter=1.1.1.1'
 
 name: **Gov-Vendor-License-IDs** 
 stop auto encoding: Yes
-value: <pre><code>UriEncode(Software)=HashedLicenceKey,UriEncode(Software2)=HashedLicenceKey</code></pre>
+value: <code>UriEncode(Software)=HashedLicenceKey,UriEncode(Software2)=HashedLicenceKey</code>
 notes: may only be one software licence as in our case.
 
 These headers arfe only required for ***_SERVER** Connection Methods
