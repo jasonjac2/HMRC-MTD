@@ -201,9 +201,9 @@ These headers arfe only required for ***_SERVER** Connection Methods
 
 ## III. Test the Headers ##  
 
-Make sure you subscribe for the header testing API on the HMRC Sandbox
-Make sure you are in test mode
-Call the new TestHeaders function                                                               
+- Make sure you subscribe for the header testing API on the HMRC Sandbox
+- Make sure you are in test mode
+- Call the new TestHeaders function                                                               
 
 
 
