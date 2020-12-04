@@ -5,6 +5,8 @@ One of the big additions to HMRC VAT Submissions is the Anti-Fraud Headers. I'm 
 
 This is a description of how I implemented these using the HMRC Rest components developed by Ian Hamilton.
 
+Note that the Objects are from Ian's FMX Directory but may be ok in VCL (not tested
+
 There are 3 parts:
 
 I. Changes to the code in the components;
@@ -17,7 +19,8 @@ While I have used FMX, it is only a Windows implementation and the code provided
 
 THMRCRestClient 
 
-1. Change <code>procedure AddaHeader</code>:
+1. Change 
+  <code>procedure AddaHeader</code>:
 <pre><code> 
     Procedure THMRCRestClient.AddaHeader(Const aName, aValue: String; Const NoEncode: boolean = False); 
     Const
